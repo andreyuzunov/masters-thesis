@@ -1,0 +1,109 @@
+INSTRUCTIONS IN THIS FILE MIGHT BE OUT OF DATE!
+See: http://dev.online6.eu/spdytor/
+
+Simple way to measure page load time in Tor
+-------------------------------------------
+
+- For forcing Tor to use always the same circuit (route to the target),
+you can use EntryNodes, ExitNodes, and ExcludeNodes in 'torrc'. Here is
+an example: 
+
+  StrictNodes 1
+  #A node in UK
+  EntryNodes 89.16.176.158
+  #A node in Garching, Germany with running SPDY-to-HTTP proxy
+  # 131.159.15.90
+  ExitNodes spdytor1
+  #Middle node is 38.229.70.61 in USA
+  #To choose the middle node, we exclude all the possible IPs,
+  #but leave the 3 IPs, that we need
+  ExcludeNodes 0.0.0.0/3, 32.0.0.0/6, 36.0.0.0/7, 38.0.0.0/9, 38.128.0.0/10, 38.192.0.0/11, 38.224.0.0/14, 38.228.0.0/16, 38.229.0.0/18, 38.229.64.0/22, 38.229.68.0/23, 38.229.70.0/27, 38.229.70.32/28, 38.229.70.48/29, 38.229.70.56/30, 38.229.70.60/32, 38.229.70.62/31, 38.229.70.64/26, 38.229.70.128/25, 38.229.71.0/24, 38.229.72.0/21, 38.229.80.0/20, 38.229.96.0/19, 38.229.128.0/17, 38.230.0.0/15, 38.232.0.0/13, 38.240.0.0/12, 39.0.0.0/8, 40.0.0.0/5, 48.0.0.0/4, 64.0.0.0/4, 80.0.0.0/5, 88.0.0.0/8, 89.0.0.0/12, 89.16.0.0/17, 89.16.128.0/19, 89.16.160.0/20, 89.16.176.0/25, 89.16.176.128/28, 89.16.176.144/29, 89.16.176.152/30, 89.16.176.156/31, 89.16.176.159/32, 89.16.176.160/27, 89.16.176.192/26, 89.16.177.0/24, 89.16.178.0/23, 89.16.180.0/22, 89.16.184.0/21, 89.16.192.0/18, 89.17.0.0/16, 89.18.0.0/15, 89.20.0.0/14, 89.24.0.0/13, 89.32.0.0/11, 89.64.0.0/10, 89.128.0.0/9, 90.0.0.0/7, 92.0.0.0/6, 96.0.0.0/3, 128.0.0.0/7, 130.0.0.0/8, 131.0.0.0/9, 131.128.0.0/12, 131.144.0.0/13, 131.152.0.0/14, 131.156.0.0/15, 131.158.0.0/16, 131.159.0.0/21, 131.159.8.0/22, 131.159.12.0/23, 131.159.14.0/24, 131.159.15.0/26, 131.159.15.64/28, 131.159.15.80/29, 131.159.15.88/31, 131.159.15.91/32, 131.159.15.92/30, 131.159.15.96/27, 131.159.15.128/25, 131.159.16.0/20, 131.159.32.0/19, 131.159.64.0/18, 131.159.128.0/17, 131.160.0.0/11, 131.192.0.0/10, 132.0.0.0/6, 136.0.0.0/5, 144.0.0.0/4, 160.0.0.0/3, 192.0.0.0/2
+
+Note: first, you have to run Tor once without these configuration lines!
+It is possible that Tor cannot build circuits after setting such
+big restrictions. If so, make sure that all the desired nodes run on
+their IPs and try to restart Tor client.
+
+
+- For measuring load times in browser, this page can be used:
+
+  http://dev.online6.eu/spdytor/benchmark.htm
+
+It measures page load time in a frame with JavaScript.
+
+- Here is a list of frame-friendly web sites among Alexa Top 100 sites:
+
+  http://www.amazon.com/
+  http://www.baidu.com/
+  http://www.wikipedia.org/
+  http://www.qq.com/
+  http://www.taobao.com/
+  http://www.yahoo.co.jp/
+  http://www.bing.com/
+  http://www.sina.com.cn/
+  http://www.ask.com/
+  http://www.163.com/
+  http://www.ebay.com/
+  http://www.hao123.com/
+  http://www.weibo.com/
+  http://www.wordpress.com/
+  http://www.amazon.co.jp/
+  http://www.xvideos.com/
+  http://www.fc2.com/
+  http://www.microsoft.com/
+  http://www.conduit.com/
+  http://www.tmall.com/
+  http://www.babylon.com/
+  http://www.xhamster.com/
+  http://www.craigslist.org/
+  http://www.sohu.com/
+  http://www.amazon.de/
+  http://www.apple.com/
+  http://www.soso.com/
+  http://www.pornhub.com/
+  http://www.imdb.com/
+  http://www.amazon.co.uk/
+  http://www.xnxx.com/
+  http://www.ifeng.com/
+  http://www.bbc.co.uk/
+  http://www.neobux.com/
+  http://www.jd.com/
+  http://www.360.cn/
+  http://www.mywebsearch.com/
+  http://www.aol.com/
+  http://www.youku.com/
+  http://www.redtube.com/
+  http://www.alibaba.com/
+  http://www.go.com/
+  http://www.blogspot.in/
+  http://www.dailymotion.com/
+  http://www.vube.com/
+  http://www.adf.ly/
+  http://www.amazon.fr/
+  http://www.youporn.com/
+  http://www.about.com/
+  http://www.cnn.com/
+  http://www.ebay.de/
+  http://www.imgur.com/
+  http://www.rakuten.co.jp/
+  http://www.adobe.com/
+  http://www.directrev.com/
+  http://www.amazon.cn/
+  http://www.ku6.com/
+  
+  
+- A large web page residing on the same physical machine as spdytor1
+can be found here:
+
+  http://svm806.i2.as.net.in.tum.de/hubble.htm
+
+The server supports also SPDY.
+
+
+- To measure traffic between any two nodes, you can use the script:
+
+  http://dev.online6.eu/spdytor/traffic-exit-node
+  
+Run it on the machine you want like:
+
+  ./traffic-exit-node <IP-OF-THE-OTHER-MACHINE>

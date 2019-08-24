@@ -1,0 +1,32 @@
+#!/bin/bash -eux
+#set -o verbose
+
+# iptables -A INPUT -s 173.213.78.126 -j ACCEPT
+# iptables -A OUTPUT -d 173.213.78.126 -j ACCEPT 
+
+if [ "1" -gt "$#" ]
+then
+        echo "usage: script ip"
+        exit
+fi
+
+
+IP="$1"
+
+iptables -A INPUT -s "$IP" -j ACCEPT
+iptables -A OUTPUT -d "$IP" -j ACCEPT
+
+echo "Wait for keypress..."
+
+read -n 1 -s
+
+
+INPUT_PACKETS=`iptables -L INPUT -vxn | tail -1 | egrep "[[:digit:]]+" -o | head -1`
+INPUT_BYTES=`iptables -L INPUT -vxn | tail -1 | egrep "[[:digit:]]+" -o | head -2 | tail -1`
+OUTPUT_PACKETS=`iptables -L OUTPUT -vxn | tail -1 | egrep "[[:digit:]]+" -o | head -1`
+OUTPUT_BYTES=`iptables -L OUTPUT -vxn | tail -1 | egrep "[[:digit:]]+" -o | head -2 | tail -1`
+
+iptables -D INPUT -s "$IP" -j ACCEPT
+iptables -D OUTPUT -d "$IP" -j ACCEPT
+
+printf "IP: %s\nINPUT_PACKETS: %s\nINPUT_BYTES: %s\nOUTPUT_PACKETS: %s\nOUTPUT_BYTES: %s\n" "$IP" "$INPUT_PACKETS" "$INPUT_BYTES" "$OUTPUT_PACKETS" "$OUTPUT_BYTES"

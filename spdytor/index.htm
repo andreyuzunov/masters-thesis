@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=utf-8" /><title>Using SPDY with Tor via proxies | Speeding up Tor with SPDY</title><style type="text/css">
+body{font-family:Arial,sans-serif;font-size:12px;width:700px}
+h6{font-weight:normal;font-size:12px}
+th,td{padding:5px 5px 5px 5px}
+a{color:#333}
+</style></head><body>
+<h1>Speeding up Tor with SPDY (Master's Thesis)</h1>
+<h2>Using SPDY with Tor via proxies</h2>
+<p>(see also: <a href="http://dev.online6.eu/spdypush/">Prediction algorithm for SPDY server push</a>)</p>
+<p>SPDY is a rather new protocol which is an alternative to HTTP. It was designed to address inefficiencies in the latter and thereby improve latency and reduce bandwidth consumption.</p>
+<p><a href="#n1">[1]</a> presents the design and implementation of a setup for utilizing SPDY within the anonymizing Tor network for reducing latency and traffic in the latter. A C library implementing the SPDY server protocol is introduced together with an HTTP to SPDY and a SPDY to HTTP proxy which are the base for the presented design.</p>
+<p>Moreover, the real profit from using SPDY within the Tor network on loading some of the most popular web sites is presented.</p>
+
+<h3>How to run the proxies with Tor (30.12.2013)</h3>
+<h4>1. How to run SPDY-to-HTTP proxy on Tor exit node</h4>
+<ul>
+<li>The following software is needed:
+<ul>
+<li>libmicrospdy -- <strike>it can be found together with libmicrohttpd: <a href="http://www.gnu.org/s/libmicrohttpd/">http://www.gnu.org/s/libmicrohttpd/</a></strike><br/>
+(23.01.2016: The library is not maintained anymore. The latest version can be found at<br/>
+<a href="https://github.com/andreyuzunov/microhttpd/tree/7eb43cdad7616be3b74a81e4e8f6e3ad4a20f640">https://github.com/andreyuzunov/microhttpd/tree/7eb43cdad7616be3b74a81e4e8f6e3ad4a20f640</a> )</li>
+</ul>
+<br/>
+</li>
+<li>The proxy should listen on IPv4 address 192.0.2.80 and port 9980. This
+address is not routed on the Internet. It should be assigned to the node.
+As an example for doing this, Debian file /etc/network/interfaces could
+be used:
+<pre>  auto lo:0
+  allow-hotplug lo:0
+  iface lo:0 inet static
+    address 192.0.2.80
+    netmask 255.255.255.0
+</pre>
+</li>
+<li>Tor may want to use this address, so it is possibly a good idea to use
+'Address' in Tor configuration file to tell Tor which is actually your
+public address.
+<br/>&nbsp;
+</li>
+<li>Make sure that the exit node have such an exit policy (in file torrc) that
+192.0.2.80:9980 is allowed. You can put to the beginning of your
+ExitPolicy:
+<pre>  accept 192.0.2.80:9980,
+</pre>
+</li>
+<li>After compiling and installing libmicrohttpd, the proxy executable is called
+microspdy2http. Run it like this:
+<pre>  microspdy2http -p 9980 -l 192.0.2.80 -rDt4 -T 120
+</pre>
+Note: SPDY header compression is enabled in libmicrospdy. This can be a
+security risk (CRIME attack).
+</li></ul>
+
+<h4>2. How to run HTTP-to-SPDY proxy on Tor client</h4>
+<ul>
+<li>The following software is needed:
+<ul>
+<li>spdylay -- <a href="http://spdylay.sourceforge.net/">http://spdylay.sourceforge.net/</a></li>
+<li>libmicrohttpd -- <a href="http://www.gnu.org/s/libmicrohttpd/">http://www.gnu.org/s/libmicrohttpd/</a><br/>
+(23.01.2016: The required examples can be found at<br/>
+<a href="https://github.com/andreyuzunov/libmicrohttpd/tree/7eb43cdad7616be3b74a81e4e8f6e3ad4a20f640/src/examples">https://github.com/andreyuzunov/libmicrohttpd/tree/7eb43cdad7616be3b74a81e4e8f6e3ad4a20f640/src/examples</a> )</li>
+<li>torsocks -- <a href="http://code.google.com/p/torsocks/">http://code.google.com/p/torsocks/</a>. (The Tor SOCKS proxy by default listens on port 9050, but Tor from Tor Browser Bundle listens on 9150. You may need to edit torsocks.conf -- search where
+it is located -- to configure this.)</li>
+</ul>
+<br/>
+</li>
+<li>For now, Tor client cannot automatically find an exit node with proxy.
+Thus, this has to be configured in the file 'torrc':
+<pre>  ExitNodes 1.2.3.4
+  StrictNodes 1
+</pre>
+</li>
+<li>The HTTP-to-SPDY proxy is called mhd2spdy. <strike>You can find it in the examples folder of libmicrohttpd.</strike> Run it together with torsocks like this:
+<pre>  torsocks src/examples/mhd2spdy -p 1980 -b http://192.0.2.80:9980 -o
+</pre>
+</li>
+<li>To start using the proxy, you have to configure the Tor Browser.
+<br/><br/>
+You should set an HTTP proxy: the address is 127.0.0.1 and the port is the same you used for starting mhd2spdy (e.g. 1980 here in this example). To have a fully functional browser, do NOT remove the SOCKS proxy. In this way, all HTTP connection will go through the HTTP-to-SPDY proxy and all
+HTTPS connections will go directly through the Tor proxy. This works in the Tor Browser!
+<br/><br/>
+To gain performance, you have to open 'about:config' and set
+'netowrk.http.proxy.pipelining' to 'false'!
+<br/><br/>
+Note: Tor will issue warnings like this:
+<pre>  Your application (using socks4 to port 9980) is giving Tor only an IP address.
+  Applications that do DNS resolves themselves may leak information. ...
+</pre>
+For now, this cannot be avoided. It does not mean that there are leaks.
+<br/><br/>
+Note: SPDY header compression is disabled in spdylay because of the
+CRIME attack.</li>
+</ul>
+<!--
+<p><strong>This information is outdated!</strong></p>
+<ul>
+<li><a href="HowTo-spdy-exit-node"> HowTo-spdy-exit-node</a></li>
+<li><a href="HowTo-spdy-tor-client"> HowTo-spdy-tor-client</a></li>
+<li><a href="HowTo-spdytor-measurements"> HowTo-spdytor-measurements</a></li>
+</ul>
+-->
+<h3>Contact</h3>
+<p>Andrey Uzunov &lt;andrey.uzunov at online6.eu&gt;</p>
+<hr/>
+<h6><a name="n1">[1]</a> <a href="https://gnunet.org/sites/default/files/uzunov2013torspdy.pdf">https://gnunet.org/sites/default/files/uzunov2013torspdy.pdf</a>
+or <a href="http://dev.online6.eu/spdypush/thesis.pdf">http://dev.online6.eu/spdypush/thesis.pdf</a></h6>
+
+</body></html>

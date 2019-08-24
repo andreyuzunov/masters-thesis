@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html;charset=utf-8" /><title>Prediction algorithm for SPDY server push | Speeding up Tor with SPDY</title><style type="text/css">
+body{font-family:Arial,sans-serif;font-size:12px;width:700px}
+h6{font-weight:normal;font-size:12px}
+th,td{padding:5px 5px 5px 5px}
+a{color:#333}
+</style></head><body>
+<h1>Speeding up Tor with SPDY (Master's Thesis)</h1>
+<h2>Prediction algorithm for SPDY server push</h2>
+<p>(see also: <a href="http://dev.online6.eu/spdytor/">Using SPDY with Tor via proxies</a>)</p>
+<p>SPDY is a rather new protocol which is an alternative to HTTP. It was designed to address inefficiencies in the latter and thereby improve latency and reduce bandwidth consumption.</p>
+<p>In <a href="#n1">[1]</a>, we focus on the SPDY server push feature which allows servers to send multiple responses to a single request for reducing latency and traffic on loading web pages. We propose a prediction algorithm for employing push at SPDY servers and proxies. The algorithm makes predictions based on previous requests and responses and initially does not know anything about the data which it will push.</p>
+<p>Finally, evaluations of the proposed push prediction algorithm are given for emphasizing the possible gain of employing it at SPDY reverse and forward proxies.</p>
+<h3>Download</h3>
+<p>Some of the data sets used in [1] for evaluating the algorithm, as well as a simple implementation in PHP, are available for download here. Please note that using the data sets or the implementation is subject to the condition that you cite [1] as a source where appropriate.</p>
+<table>
+<tr><th>Data set</th><th>Download</th><th>Format</th><th>Note</th></tr>
+<tr><td>Isp</td><td><a href="isp-1.log.gz">1</a> <a href="isp-2.log.gz">2</a> <a href="isp-3.log.gz">3</a> <a href="isp-4.log.gz">4</a> <a href="isp-5.log.gz">5</a></td><td>Combined Log Format</td><td>The third field is a timestamp in milliseconds. It is not considered by the implementation. Source and requested path are integers. See [1] for more information about the data.</td></tr>
+<tr><td>Proxy1</td><td><a href="proxy1.log.gz">proxy1.log.gz</a></td><td>Common Log Format</td><td>Each host is presented by a unique integer. The path after the host is an integer based on both the original host and path. When the path is '/' or '/favicon.ico', it stays in clear form. See the sorce code and [1] for more information about the data.</td></tr>
+<tr><td>Proxy2</td><td><a href="proxy2.log.gz">proxy2.log.gz</a></td><td>Common Log Format</td><td>Each host is presented by a unique integer. The path after the host is an integer based on both the original host and path. When the path is '/' or '/favicon.ico', it stays in clear form. See the sorce code and [1] for more information about the data.</td></tr>
+</table>
+<p><strong>Source code:</strong> <a href="spdy-push-prediction.tar.gz">spdy-push-prediction.tar.gz</a></p>
+<h3>Contact</h3>
+<p>Andrey Uzunov &lt;andrey.uzunov at online6.eu&gt;</p>
+<hr/>
+<h6><a name="n1">[1]</a> <a href="https://gnunet.org/sites/default/files/uzunov2013torspdy.pdf">https://gnunet.org/sites/default/files/uzunov2013torspdy.pdf</a>
+or <a href="http://dev.online6.eu/spdypush/thesis.pdf">http://dev.online6.eu/spdypush/thesis.pdf</a></h6>
+
+</body></html>

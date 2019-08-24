@@ -1,0 +1,49 @@
+INSTRUCTIONS IN THIS FILE MIGHT BE OUT OF DATE!
+See: http://dev.online6.eu/spdytor/
+
+How to run SPDY-to-HTTP proxy on Tor exit node?
+-----------------------------------------------
+
+- The proxy should listen on IPv4 address 192.0.2.80 and port 9980. This
+address is not routed on the Internet. It should be assigned to the node.
+As an example for doing this, Debian file /etc/network/interfaces could
+be used:
+
+  auto lo:0
+  allow-hotplug lo:0
+  iface lo:0 inet static
+    address 192.0.2.80
+    netmask 255.255.255.0
+
+
+- Tor may want to use this address, so it is possibly a good idea to use
+'Address' in Tor configuration file to tell Tor which is actually your
+public address.
+
+- Make sure that the exit node have such an exit policy that
+192.0.2.80:9980 is allowed. You can put to the beginning of your
+ExitPolicy:
+
+  accept 192.0.2.80:9980,
+
+
+- The used SPDY-to-HTTP proxy is part of libmicrospdy, whose source can
+be found together with libmicrohttpd. To download the latest source code,
+one can use:
+
+  $ svn checkout https://gnunet.org/svn/libmicrohttpd
+
+
+- The proxy will behave like a SPDY server. That means it may use
+TLS/SSL. For runing it you may need to give the path to your certificate and
+key files. For testing purposes, you can use src/datadir/cert-and-key.pem
+
+- After compiling and installing libmicrohttpd, the proxy executable is called
+microspdy2http. You can run it to see possible options. An example for
+proxy without TLS, TCP_NODELAY for SPDY connections, using only IPv4 to
+connect to HTTP, hvaing 120s timeout per HTTP transfer:
+
+  microspdy2http -p 9980 -l 192.0.2.80 -rDt4 -T 120
+
+Note: SPDY header compression is enabled in libmicrospdy. This can be a
+security risk (CRIME attack).
