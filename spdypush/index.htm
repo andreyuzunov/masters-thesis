@@ -6,7 +6,7 @@ a{color:#333}
 </style></head><body>
 <h1>Speeding up Tor with SPDY (Master's Thesis)</h1>
 <h2>Prediction algorithm for SPDY server push</h2>
-<p>(see also: <a href="http://dev.online6.eu/spdytor/">Using SPDY with Tor via proxies</a>)</p>
+<p>(see also: <a href="../spdytor/">Using SPDY with Tor via proxies</a>)</p>
 <p>SPDY is a rather new protocol which is an alternative to HTTP. It was designed to address inefficiencies in the latter and thereby improve latency and reduce bandwidth consumption.</p>
 <p>In <a href="#n1">[1]</a>, we focus on the SPDY server push feature which allows servers to send multiple responses to a single request for reducing latency and traffic on loading web pages. We propose a prediction algorithm for employing push at SPDY servers and proxies. The algorithm makes predictions based on previous requests and responses and initially does not know anything about the data which it will push.</p>
 <p>Finally, evaluations of the proposed push prediction algorithm are given for emphasizing the possible gain of employing it at SPDY reverse and forward proxies.</p>
@@ -23,6 +23,6 @@ a{color:#333}
 <p>Andrey Uzunov &lt;andrey.uzunov at online6.eu&gt;</p>
 <hr/>
 <h6><a name="n1">[1]</a> <a href="https://gnunet.org/sites/default/files/uzunov2013torspdy.pdf">https://gnunet.org/sites/default/files/uzunov2013torspdy.pdf</a>
-or <a href="http://dev.online6.eu/spdypush/thesis.pdf">http://dev.online6.eu/spdypush/thesis.pdf</a></h6>
+or <a href="../spdypush/thesis.pdf">../spdypush/thesis.pdf</a></h6>
 
 </body></html>
